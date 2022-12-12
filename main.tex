@@ -1,0 +1,478 @@
+\documentclass[10pt,oneside]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[
+  letterpaper,
+  left=1cm,
+  right=1cm,
+  top=1.5cm,
+  bottom=1.5cm
+]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\fancyhf{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{APP1-B}
+\fancyhead[C]{LEPL1202}
+\fancyhead[R]{Version 2022}
+\fancyfoot[C]{\thepage\ sur \pageref*{LastPage}}
+\renewcommand{\headrulewidth}{2pt} 
+\renewcommand{\footrulewidth}{2pt}
+
+\usepackage{siunitx}
+\usepackage{mathtools}
+
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{calc, decorations.markings}
+\usetikzlibrary{plotmarks}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+
+\tdplotsetmaincoords{60}{110}
+%\tdplotsetmaincoords{90}{0}
+\pgfmathsetmacro{\radius}{1}
+\pgfmathsetmacro{\thetavec}{0}
+\pgfmathsetmacro{\phivec}{0}
+\pgfmathsetmacro{\dz}{.2}
+\pgfmathsetmacro{\dzh}{\dz*.5}
+\pgfmathsetmacro{\n}{4}
+
+\pgfdeclareplotmark{gradient}{
+    \fill [
+        draw=black,
+        left color=white,
+        right color=black,
+        shading angle=45
+    ] (0,0) circle [radius=\pgfplotmarksize];
+}
+
+\author{}
+\title{APP1 - Partie B - Intégrale curviligne}
+\date{}
+
+
+\def\versionTuteur{}
+
+
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+\section{Objectifs}
+
+Cet APP a pour objectif d'introduire ou de rappeler le concept d'intégrale curviligne, en partant de notions de la vie de tous les jours, pour arriver à son application en électromagnétisme.
+
+% Lien: https://upload.wikimedia.org/wikipedia/commons/4/42/Line_integral_of_scalar_field.gif?uselang=fr
+
+\section{Contexte}
+
+% Attention z_B = 0 ici...
+
+Après une journée au ski, trois ingénieurs en herbe, Guillaume, François et Florian, discutent de leurs meilleures descentes de ski. Notamment, ils se souviennent d'une piste qui, à un moment donné ($z_A$), se sépare en deux pentes différentes qui se rejoignent un peu plus bas ($z_B$), voir \autoref{fig:pente2dfirst}. Guillaume ayant pris la pente \textcolor{red}{rouge} ($R$), et François la \textcolor{blue}{bleue} ($B$), ils n'arrivent pas à se mettre d'accord sur qui a été le plus vite, c.-à-d., celui qui atteint la vitesse la plus élevée. Afin de clore le débat et d'éviter une bagarre, Florian leur explique que, pour avoir le fin mot de l'histoire, il suffit de calculer ! En effet, si on néglige les frottements, et qu'on suppose que la gravité $g$ est constante que toute l'énergie potentielle se transforme en énergie cinétique, il est possible de déterminer la vitesse finale de Guillaume et François.
+
+La courbe $R$ suit la fonction
+\begin{equation}
+    z = z_B + (z_A - z_B)\left(\frac{x-L}{L}\right)^2,
+\end{equation}
+et la courbe $B$ suit, quant à elle, la fonction
+\begin{equation}
+    z = z_A - (z_A - z_B)\frac{x}{L},
+\end{equation}
+avec $L$ la distance horizontale parcourue, la piste s'étalant de $x=0$ (gauche) à $x=L$ (droite).
+
+\pgfmathsetmacro{\zA}{100}
+\pgfmathsetmacro{\zB}{0}
+\pgfmathsetmacro{\L}{90}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1.3,
+        declare function={path1(\y)=\zB + (\zA - \zB)*((\y-\L)/\L)^2;},
+        declare function={path2(\y)=100 + 100*(\y/(90));}]
+        \begin{axis}[view={90}{0},
+            hide axis,
+            zmin=-20,
+            zmax=120,
+            ymin=-120,
+            ymax=20,
+            ]
+            \pgfplotsset{ticks=none}
+        
+            \addplot3 [color=black, draw=none, mark=gradient, mark size=3]
+                table[row sep=crcr] {%
+                0 0 0\\
+                0 -90 100\\
+                };
+                
+            \addplot3 [domain=-90:0,samples y=1,red,smooth,line width = 1.5pt] (0, x, {path1(90-x)});
+            
+            \addplot3 [domain=-90:0,samples y=1,blue,smooth,line width = 1.5pt,name path=A] (0, x, {path2(-x-90)});
+            
+            \path (axis cs:0,-90,100) node[above] {$z_A$} -- (axis cs:0,0,0) node[below] {$z_B$};
+            
+            \draw[thick,->] (axis cs:0,-90,45) -- (axis cs:0,-75,45) node[right,anchor=west] {$x$};
+            \draw[thick,->] (axis cs:-0,-90,45) -- (axis cs:0,-90,60) node[above,anchor=south] {$z$};
+            
+            \draw[thick,dashed,|<->|] (axis cs:55,-90,-15) -- (axis cs:55,0,-15) node[midway,sloped,above] {$L$};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Vue 2D de la pente et des deux trajectoires.}
+    \label{fig:pente2dfirst}
+\end{figure}
+
+\begin{enumerate}
+    \item En supposant une vitesse initiale nulle, déterminez la vitesse finale de chacun des skieurs.
+    \item Pourquoi, en théorie, la vitesse terminale des skieurs ne dépend pas du chemin parcouru ? \item Écrivez la forme intégrale de l'énergie dépensée\footnote{Attention au signe : le skieur donne-t-il ou reçoit-il de l'énergie dans la descente ?} (par le skieur) lors du trajet.
+\end{enumerate}
+
+\subsection{Le chemin a son importance}
+
+Le résultat ci-dessus déplait fortement à nos deux ingénieurs qui ne font pas confiance aux maths et décident de refaire chacun la descente, en mesurant cette fois-ci leur vitesse. Cette journée-là, le vent soufflait fort, et François et Guillaume ont des gabarits assez différents : le premier est tout petit, alors que le second est très grand. Les résultats sont sans appel : François a terminé avec une vitesse de \SI{100}{\kilo\meter\per\hour}, alors que Guillaume n'a lui atteint qu'un maximum de \SI{90}{\kilo\meter\per\hour}.
+
+Mécontents, ils retournent vers Florian en lui reprochant de les avoir induits en erreur. Florian se défend en disant que tout ce qu'il a dit était correct, sous réserve de l'hypothèse que la seule force en action est celle de la gravité. Or, avec une telle différence entre les deux skieurs et un vent très fort, cette hypothèse n'est plus vérifiée.
+
+Afin d'obtenir la bonne vitesse finale, il leur explique que le chemin parcouru a toute son importance et que ce qu'ils cherchent à calculer s'appelle une \emph{intégrale curviligne}. En fait, les intégrales (telles que vues en secondaire), de la forme
+\begin{equation}
+    \int\limits_A^B f(x) dx,
+\end{equation}
+sont un cas simplifié d'une intégrale curviligne pour laquelle le chemin de parcours est une droite allant de $x=A$ à $x=B$.
+
+De manière générale, l'intégrale d'une fonction scalaire $f(x,y)$ le long d'un chemin $C$ peut se calculer
+\begin{equation}
+    \int\limits_C f(x,y) d\ell,
+\end{equation}
+avec $d\ell$ l'incrément infinitésimal de longueur. 
+
+Attention, $f(x)$ est bien la fonction à intégrer, \textbf{pas le chemin parcouru}. Pour tenir compte du chemin, c'est similaire à une intégrale par substitution.
+
+Pour le chemin rouge, 
+\begin{equation}
+    \vec{\ell}_R(x) = \begin{bmatrix}x & 0 & z_B + (z_A - z_B)\left(\frac{x-L}{L}\right)^2\end{bmatrix},
+\end{equation}
+et son élément de longueur infinitésimal\footnote{Ceci se calcule en prenant la dérivée du vecteur $\vec{\ell}$ par rapport à $x$.} vaut
+\begin{equation}
+    d\ell_R = \sqrt{1^2 + 0^2 + \Big(2(z_A - z_B)\frac{x-L}{L^2})\Big)^2} dx = \sqrt{1  + 4(z_A-z_B)^2 \frac{(x-L)^2}{L^4}} dx.
+\end{equation}
+
+D'une manière similaire, le chemin bleu suit maintenant la courbe
+\begin{equation}
+    \vec{\ell}_B(x) = \begin{bmatrix}x & 0 & z_A - (z_A - z_B)\frac{x}{L}\end{bmatrix},
+\end{equation}
+et
+\begin{equation}
+    d\ell_B = \sqrt{1^2 + 0^2 + (\frac{z_A - z_B}{L})^2} dx = \sqrt{1 + \frac{(z_A - z_B)^2}{L^2}} dx.
+\end{equation}
+
+\subsubsection{Champ conservatif}
+
+Avant de prendre en compte des forces non conservatives, vérifiez que l'énergie accumulée est la même pour les deux chemins si la seule force en jeu est la force de gravité
+\begin{equation}
+\vec{F} = \begin{bmatrix} 0 & 0 &-m\cdot g\end{bmatrix}.
+\end{equation}
+
+\begin{enumerate}
+    \item Calculez, pour chacun des deux chemins, le travail effectué par la force de gravité sur le skieur $\vec{F}$.
+    \item Le champ gravitationnel étant conservatif, les résultats sont censés être les mêmes. Si ce n'est pas le cas, expliquez ce qu'il faut prendre en compte pour obtenir des réponses identiques.
+    \item Réécrivez, le cas échéant, l'intégrale de calcul du travail pour qu'elle soit correcte et vérifiez que vous obtenez le même résultat.
+\end{enumerate}
+
+\subsubsection{Champ non conservatif}
+
+Maintenant, Guillaume et François ont toutes les clés en main pour calculer le travail dans un champ non conservatif. Pour ce faire, ils supposent que, en plus de la force de gravité, une force de frottement du vent agit de manière proportionnelle à leur altitude :
+\begin{equation}
+     \vec{F} = \begin{bmatrix} -\alpha \cdot z & 0 &-m\cdot g \end{bmatrix},
+\end{equation}
+avec $\alpha$ un coefficient positif de prise de vent propre à la corpulence du skieur et $z$ l'altitude du skieur (à remplacer en fonction de la courbe rouge ou bleue).
+
+\begin{enumerate}
+    \item Calculez, pour chacun des deux chemins, le travail effectué par la force totale $\vec{F}$ sur le skieur. Notez $\alpha_R$ pour le chemin rouge, $\alpha_B$ pour le bleu.
+    \item Écrivez le rapport $\alpha_R/\alpha_B$, pour des skieurs de même masse, si on prend en compte les vitesses énoncées plus haut. 
+\end{enumerate}
+
+\subsection{Une descente un peu plus réaliste}
+
+En pratique, les skieurs peuvent prendre des chemins allant dans au moins 2 directions différentes, la troisième étant imposée par le relief. Guillaume et François décident donc, cette fois-ci, de comparer deux trajectoires différentes sur une même piste de ski (\autoref{fig:pente3d} et \autoref{fig:pente2d}).
+
+\begin{minipage}[b]{.5\textwidth}
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1.5,
+        declare function={fct(\x,\y)=100 - 100*(\y^2/(90*90));},
+        declare function={path(\x)=30*sin(\n*180*\x/90);}]
+        \begin{axis}[view={25}{30},
+            hide axis,
+            zmin=-20,
+            zmax=120,
+            ]
+            \pgfplotsset{ticks=none}
+        
+            \addplot3 [color=black, draw=none, mark=gradient, mark size=3]
+                table[row sep=crcr] {%
+                0 0 100\\
+                0 -90 0\\
+                };
+
+            \addplot3 [
+                surf,
+                colormap/blackwhite,
+                %shader=faceted,
+                fill opacity=0.75,
+                samples=25,
+                domain=-90:90,
+                y domain=-90:0,
+                %on layer=foreground,
+                ] {fct(x,y)};
+                
+            \addplot3 [domain=-90:0,samples y=1,red,smooth,line width = 1.5pt] (0, x, {fct(0,x)});
+            
+            \addplot3 [domain=-90:0,samples y=1,blue,smooth,line width = 1.5pt,name path=A] ({path(x)},x, {fct(path(x),x)});
+            
+            \addplot3 [domain=-90:0,samples y=1,blue,smooth,line width = 1.5pt,name path=B] ({path(x)},x, {fct(path(x),x)});
+            
+            \path (axis cs:0,0,100) node[above] {$z_A$} -- (axis cs:0,-90,0) node[below] {$z_B$};
+
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Vue 3D de la pente et des deux trajectoires.}
+    \label{fig:pente3d}
+\end{figure}
+\end{minipage}
+\begin{minipage}[b]{.5\textwidth}
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1.2,
+        declare function={fct(\x,\y)=100 - 100*(\y^2/(90*90));},
+        declare function={path(\x)=30*sin(\n*180*\x/90);}]
+        \begin{axis}[view={0}{90},
+            hide axis,
+            ymin=-100,
+            ymax=10,
+            ]
+            \pgfplotsset{ticks=none}
+        
+            \addplot3 [color=black, draw=none, mark=gradient, mark size=3]
+                table[row sep=crcr] {%
+                0 0 100\\
+                0 -90 0\\
+                };
+
+            \addplot3 [
+                surf,
+                colormap/blackwhite,
+                %shader=faceted,
+                fill opacity=0.75,
+                samples=25,
+                domain=-90:90,
+                y domain=-90:0,
+                on layer=foreground,
+                ] {fct(x,y)};
+                
+            \addplot3 [domain=-90:0,samples y=1,red,smooth,line width = 1.5pt] (0, x, {fct(0,x)});
+            
+            \addplot3 [domain=-90:0,samples y=1,blue,smooth,line width = 1.5pt] ({path(x)},x, {fct(path(x),x)});
+            
+            \path (axis cs:0,0,100) node[above] {$z_A$} -- (axis cs:0,-90,0) node[below] {$z_B$};
+
+        \end{axis}
+    \end{tikzpicture}
+    \vspace{.7cm}
+    \caption{Vue du haut de la pente.}
+    \label{fig:pente2d}
+\end{figure}
+\end{minipage}
+
+Même dans le cas général d'une intégrale curviligne, il est possible de visualiser ceci comme un calcul de surface sous une courbe (\autoref{fig:pente3darea}). Ceci est cependant plus compliqué à faire lorsque $f$ est un champ vectoriel, et d'autres interprétations sont possibles (voir \href{https://upload.wikimedia.org/wikipedia/commons/b/b0/Line_integral_of_vector_field.gif?uselang=fr}{https://tinyurl.com/2p89s34s}).
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1.5,
+        declare function={fct(\x,\y)=100 - 100*(\y^2/(90*90));},
+        declare function={path(\x)=30*sin(\n*180*\x/90);}]
+        \begin{axis}[view={65}{30},
+            hide axis,
+            xmin=-90,
+            xmax=90,
+            zmin=-20,
+            zmax=120,
+            ]
+            \pgfplotsset{ticks=none}
+        
+            \addplot3 [color=black, draw=none, mark=gradient, mark size=3]
+                table[row sep=crcr] {%
+                0 0 100\\
+                0 -90 0\\
+                };
+                
+            \addplot3 [domain=-90:0,samples y=1,red,smooth,line width = 1.5pt] (0, x, {fct(0,x)});
+            
+            \addplot3 [domain=-90:0,samples y=0,blue,smooth,line width = 1.5pt] ({path(x)},x, {fct(path(x),x)});
+            
+            \addplot3 [domain=-90:0,samples y=0,blue,smooth,line width = 1.5pt,on layer=axis foreground,dashed] ({path(x)},x,0);
+            
+            %\addplot3 [domain=-90:0,samples y=0,red,smooth,line width = 1.5pt,on layer=axis foreground,dashed] (0,x,0);
+            
+            \foreach \i in {1,...,\n} {
+                \pgfmathsetmacro{\degA}{-(\i-1) * 90/\n}
+                \pgfmathsetmacro{\degB}{-(\i) * 90/\n}
+                
+                \addplot3 [domain=\degB:\degA,samples y=0,draw=none,smooth,name path=A] ({path(x)},x, {fct(path(x),x)});
+            
+                \addplot3 [domain=\degB:\degA,samples y=0,draw=none,smooth,name path=B,on layer=axis foreground] ({path(x)},x,0);
+                
+                \addplot3 [domain=\degB:\degA,samples y=0,draw=none,smooth,name path=C] (0,x, {fct(0,x)});
+            
+                \addplot3 [domain=\degB:\degA,samples y=0,draw=none,smooth,name path=D,on layer=axis foreground] (0,x,0);
+                
+                \pgfmathparse{int(Mod(\i,2))}
+                \ifthenelse{\pgfmathresult=1} {
+                    \addplot3 [blue,opacity=0.5,draw=black] fill between [of = A and B];
+                    \addplot3 [red,opacity=0.5,draw=black] fill between [of = C and D];
+                }{
+                    \addplot3 [red,opacity=0.5,draw=black] fill between [of = C and D];
+                    \addplot3 [blue,opacity=0.5,draw=black] fill between [of = A and B];
+                }
+            }
+            
+            \path (axis cs:0,0,100) node[above,anchor=south west] {$z_A$} -- (axis cs:0,-90,0) node[below,anchor=north east] {$z_B$};
+            
+            \draw[thick,->] (axis cs:10,0,0) -- (axis cs:35,0,0) node[right,anchor=south west] {$y$};
+            \draw[thick,->] (axis cs:10,0,0) -- (axis cs:10,-10,0) node[left,anchor=north east] {$x$};
+            \draw[thick,->] (axis cs:10,0,0) -- (axis cs:10,0,20) node[above,anchor=south] {$z$};
+
+            \draw[thick,dashed,|<->|] (axis cs:55,-90,0) -- (axis cs:55,0,0) node[midway,sloped,below] {$L$};
+        \end{axis}
+    \end{tikzpicture}
+    \caption{Vue 3D de la pente et des deux trajectoires.}
+    \label{fig:pente3darea}
+\end{figure}
+
+Dans le cas présent, la pente de ski a pour fonction $z=z_A + (z_B - z_A)\left(\frac{x}{L}\right)^2$, avec $L$ la longueur de la piste et $x$ variant entre 0 et $L$. Dans le cas du chemin rouge, $y$ est fixé à 0. Le vecteur direction du chemin est
+\ifcsname versionTuteur\endcsname {\color{red}
+\begin{equation}
+    \vec{\ell}_R(x) = \begin{bmatrix}x & 0 & z_A + (z_B - z_A)\left(\frac{x}{L}\right)^2 \end{bmatrix},
+\end{equation}
+et son élément de longueur infinitésimal vaut
+\begin{equation}
+    d\ell_R = \sqrt{1^2 + \left(2(z_B - z_A)\frac{x}{L^2}\right)^2} dx.
+\end{equation}
+
+Dans le cas du chemin bleu, $y$ suit la fonction $y=\sin\left(\frac{n\pi x}{L}\right)$. Nous avons donc que
+\begin{equation}
+    \vec{\ell}_B(x) = \begin{bmatrix}x & \sin\left(\frac{n\pi x}{L}\right) & z_A + (z_B - z_A)\left(\frac{x}{L}\right)^2 \end{bmatrix},
+\end{equation}
+et
+\begin{equation}
+    d\ell_B = \sqrt{1^2 + \left(\frac{n\pi }{L}\cos\left(\frac{n\pi x}{L}\right)\right)^2 + \left(2(z_B - z_A)\frac{x}{L^2}\right)^2} dx.
+\end{equation}
+}
+\else 
+\begin{equation}
+    \vec{\ell}_R(x) = \begin{bmatrix}x & 0 & z_A + (z_B - z_A)\left(\frac{x}{L}\right)^2 \end{bmatrix}.
+\end{equation}
+
+Dans le cas du chemin bleu, $y$ suit la fonction $y=\sin\left(\frac{n\pi x}{L}\right)$. Nous avons donc que
+\begin{equation}
+    \vec{\ell}_B(x) = \begin{bmatrix}x & \sin\left(\frac{n\pi x}{L}\right) & z_A + (z_B - z_A)\left(\frac{x}{L}\right)^2 \end{bmatrix}.
+\end{equation}
+\fi
+
+En supposant le cas conservatif, à savoir
+\begin{equation}
+\vec{F} = \begin{bmatrix} 0 & 0 &-m\cdot g\end{bmatrix}.
+\end{equation}
+
+\begin{enumerate}
+    \item Trouvez (dessinez) un autre chemin qui faciliterait le calcul de la variation d'énergie potentielle et calculez cette dernière.
+    \item Écrivez les deux intégrales, pour les courbes rouge et bleue, qu'il faudrait résoudre afin de calculer le travail effectué par la force de gravité sur le skieur.
+    \item Effectuez les calculs et vérifiez que la réponse est bien la même, quel que soit le chemin.
+    \item Le travail de la force est-il proportionnel (voire égal) à l'aire sous la courbe correspondante (esquissée à la \autoref{fig:pente3darea}) ? Pourquoi ? 
+\end{enumerate}
+
+\section{Application à l'électromagnétisme}
+
+Pouvez-vous faire des liens entre l'intégrale curviligne et des grandeurs définies en Physique 1 (en électricité) ? Il peut être intéressant de ré-écrire ces grandeurs à la lumière de cet APP. 
+
+\end{document}
+
+
+%% OLD
+% \subsection{Travail d'une force}
+
+% L'énergie accumulée par le skieur est directement lié au travail exercé par la force de gravité \begin{equation}
+% \vec{F} = \begin{bmatrix} 0 & 0 &-m\cdot g\end{bmatrix},
+% \end{equation}
+% le long du chemin emprunté. 
+
+% Afin de simplifier les calculs, les trajectoires ont été modifiées (cf. \autoref{fig:pente2deasy}). Le chemin rouge a été simplifié de la manière suivante
+% \begin{equation}
+%     \vec{\ell}_R(z) = \begin{bmatrix}0 & 0 & -z\end{bmatrix},
+% \end{equation}
+% et
+% \begin{equation}
+%     d\ell_R = \sqrt{0^2 + 0^2 + 1^2} dz = dz.
+% \end{equation}
+
+% D'une manière similaire, le chemin bleu suit maintenant la courbe
+% \begin{equation}
+%     \vec{\ell}_B(z) = \begin{dcases*}
+%         \begin{bmatrix}z-z_B & 0 & -z\end{bmatrix} & si $z<\frac{z_A+z_B}{2}$\\
+%         \begin{bmatrix}z_A-z & 0 & -z\end{bmatrix} & sinon,
+%     \end{dcases*}
+% \end{equation}
+% et
+% \begin{equation}
+%     d\ell_B = \sqrt{1^2 + 0^2 + 1^2} dz = \sqrt{2} dz.
+% \end{equation}
+
+% \begin{figure}[H]
+%     \centering
+%     \begin{tikzpicture}[scale=1.2,
+%         declare function={fct(\x,\y)=100 - 100*(\y^2/(90*90));},
+%         declare function={path(\x)=(\x>-45)*(-1*\x) + (\x<=-45)*(1*\x + 90);}]
+%         \begin{axis}[view={0}{90},
+%             hide axis,
+%             ymin=-100,
+%             ymax=10,
+%             xmin=-90,
+%             xmax=+90,
+%             ]
+%             \pgfplotsset{ticks=none}
+            
+%             \addplot3 [color=black, draw=none, mark=gradient, mark size=3]
+%                 table[row sep=crcr] {%
+%                 0 0 100\\
+%                 0 -90 0\\
+%                 };
+                
+%             \addplot3 [domain=-90:0,samples y=1,red,smooth,line width = 1.5pt] (0, x, {fct(0,x)});
+            
+%             \addplot3 [domain=-90:0,samples y=1,blue,line width = 1.5pt] ({path(x)},x, {fct(path(x),x)});
+            
+%             \path (axis cs:0,0,100) node[above] {$z_A$} -- (axis cs:0,-90,0) node[below] {$z_B$};
+            
+%             \draw[thick,->] (axis cs:-30,-45,0) -- (axis cs:-15,-45,0) node[right,anchor=west] {$x$};
+%             \draw[thick,->] (axis cs:-30,-45,0) -- (axis cs:-30,-30,0) node[above,anchor=south] {$z$};
+
+%         \end{axis}
+%     \end{tikzpicture}
+%     \vspace{.7cm}
+%     \caption{Trajectoires du skieur pour le calcul du travail.}
+%     \label{fig:pente2deasy}
+% \end{figure}
+
+% Ensuite,
+
+% \begin{enumerate}
+%     \item calculez, pour chacun des deux chemins, le travail effectué par la force de gravité sur le skieur $\vec{F}$ ;
+%     \item le champ gravitationnel était conservatif, les résultats sont censés être les mêmes. Si ce n'est pas le cas, Florian a-t-il induit son neveu en erreur ? Expliquez ce qu'il faut prendre en compte pour obtenir des réponses identiques ;
+%     \item réécrivez l'intégrale de calcul du travail pour qu'elle soit correcte quelle que soit la fonction $f$.
+% \end{enumerate}
