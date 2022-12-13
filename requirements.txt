@@ -1,6 +1,6 @@
 ipywidgets==7.6.5
 jupyter-server==1.17.0
-nbconvert==6.3.0 
+nbconvert==6.5.1 
 notebook==6.5.2
 numpy
 plotly==5.11.0
