@@ -1,0 +1,6 @@
+ipywidgets==7.6.5
+jupyter-server==1.12.1
+nbconvert==6.3.0 
+notebook==6.5.2
+numpy==1.23.4
+plotly==5.11.0
