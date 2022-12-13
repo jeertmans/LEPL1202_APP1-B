@@ -1,4 +1,5 @@
 ipywidgets==7.6.5
+jupyter_contrib_nbextensions
 jupyter-server==1.12.1
 nbconvert==6.3.0 
 notebook==6.5.2
