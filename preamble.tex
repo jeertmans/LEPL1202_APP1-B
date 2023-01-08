@@ -1,0 +1,50 @@
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{lastpage}
+\usepackage{fontawesome5}
+\usepackage{fancyhdr}
+\fancyhf{}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{APP1-B}
+\fancyhead[C]{LEPL1202}
+\fancyhead[R]{Version 2022}
+\fancyfoot[C]{\thepage\ sur \pageref*{LastPage}}
+
+\usepackage{siunitx}
+\usepackage{mathtools}
+
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{calc, decorations.markings}
+\usetikzlibrary{plotmarks}
+\usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
+
+\tdplotsetmaincoords{60}{110}
+%\tdplotsetmaincoords{90}{0}
+\pgfmathsetmacro{\radius}{1}
+\pgfmathsetmacro{\thetavec}{0}
+\pgfmathsetmacro{\phivec}{0}
+\pgfmathsetmacro{\dz}{.2}
+\pgfmathsetmacro{\dzh}{\dz*.5}
+\pgfmathsetmacro{\n}{4}
+
+\pgfdeclareplotmark{gradient}{
+    \fill [
+        draw=black,
+        left color=white,
+        right color=black,
+        shading angle=45
+    ] (0,0) circle [radius=\pgfplotmarksize];
+}
+
+
+\newcommand\notebook[1]{\noindent\faLaptopCode{} -- \textbf{Dans le notebook} : #1}
+\newcommand\questions{\noindent\faQuestionCircle[regular] -- \textbf{Questions} :}
