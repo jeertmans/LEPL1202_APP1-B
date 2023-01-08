@@ -23,6 +23,7 @@
 \RequirePackage[absolute]{textpos}
 \RequirePackage[right]{lineno}
 \RequirePackage{amsmath}
+\RequirePackage{lastpage}
 
 \def\@journalname{Political Analysis}
 \def\@keywordsname{Keywords}
@@ -169,13 +170,16 @@
 \preto{\footrule}{\begingroup\color{PANLightBlue}}
 \appto{\footrule}{\endgroup}
 %\fancyhead[L]{\hspace*{-4cm}\Huge\color{PANMaroon}PA}
-\fancyfoot[R]{\small\thepage}
-\fancyfoot[L]{\small\emph{\@runningauthor}\enskip|\enskip\@journalname}
+\fancyhead[L]{APP1-B}
+\fancyhead[C]{LEPL1202}
+\fancyhead[R]{Version 2023}
+\fancyfoot[C]{\thepage\ sur \pageref*{LastPage}}
 \pagestyle{fancy}
+
 \fancypagestyle{plain}{%
   \fancyhf{}
   \renewcommand{\footrule}{}
-  \fancyfoot[R]{\small\thepage}
+  \fancyfoot[C]{\thepage\ sur \pageref*{LastPage}}
 }
 
 \captionsetup*{singlelinecheck=false,font={small},labelfont={bf,color=PANDarkBlue},labelsep=period}
