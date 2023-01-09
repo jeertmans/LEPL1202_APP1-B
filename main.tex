@@ -17,21 +17,21 @@ Cet APP a pour objectif d'introduire ou de rappeler le concept d'intégrale curv
 
 Ce document s'accompagne d'un \textbf{Notebook} executable \href{https://mybinder.org/v2/gh/jeertmans/LEPL1202_APP1-B/HEAD?urlpath=/tree/index.ipynb}{en ligne}\footnote{Lien : \url{https://mybinder.org/v2/gh/jeertmans/LEPL1202_APP1-B/HEAD?urlpath=/tree/index.ipynb}.}. Il est donc utile de parcourir les deux documents en parallèle.
 
-% Attention z_B = 0 ici...
+% Attention y_B = 0 ici...
 
 \end{abstract}
 
 \section{Contexte}
 
-Après une journée au ski, trois ingénieurs en herbe, Guillaume, François et Florian, discutent de leurs meilleures descentes de ski. Notamment, ils se souviennent d'une piste qui, à un moment donné ($z_A$), se sépare en deux pentes différentes qui se rejoignent un peu plus bas ($z_B$), voir \autoref{fig:pente2dfirst}. Guillaume ayant pris la pente \textcolor{red}{rouge} ($R$), et François la \textcolor{blue}{bleue} ($B$), n'arrivent pas à se mettre d'accord sur qui a été le plus rapide, c.-à-d., celui qui atteint la vitesse la plus élevée. Afin de clore le débat et d'éviter une bagarre, Florian leur explique que, pour avoir le fin mot de l'histoire, il suffit de faire le calcul ! En effet, si on néglige les frottements, et que l'on suppose que la gravité $g$ est constante et que toute l'énergie potentielle se transforme en énergie cinétique, il est possible de déterminer la vitesse finale de Guillaume et François.
+Après une journée au ski, trois ingénieurs en herbe, Guillaume, François et Florian, discutent de leurs meilleures descentes de ski. Notamment, ils se souviennent d'une piste qui, à un moment donné ($y_A$), se sépare en deux pentes différentes qui se rejoignent un peu plus bas ($y_B$), voir \autoref{fig:pente2dfirst}. Guillaume ayant pris la pente \textcolor{red}{rouge} ($R$), et François la \textcolor{blue}{bleue} ($B$), n'arrivent pas à se mettre d'accord sur qui a été le plus rapide, c.-à-d., celui qui atteint la vitesse la plus élevée. Afin de clore le débat et d'éviter une bagarre, Florian leur explique que, pour avoir le fin mot de l'histoire, il suffit de faire le calcul ! En effet, si on néglige les frottements, et que l'on suppose que la gravité $g$ est constante et que toute l'énergie potentielle se transforme en énergie cinétique, il est possible de déterminer la vitesse finale de Guillaume et François.
 
 La courbe $R$ suit la fonction
 \begin{equation}
-    z = z_B + (z_A - z_B)\left(\frac{x-L}{L}\right)^2,
+    y = y_B + (y_A - y_B)\left(\frac{x-L}{L}\right)^2,
 \end{equation}
 et la courbe $B$ suit, quant à elle, la fonction
 \begin{equation}
-    z = z_A - (z_A - z_B)\frac{x}{L},
+    y = y_A - (y_A - y_B)\frac{x}{L},
 \end{equation}
 avec $L$ la distance horizontale parcourue, la piste s'étalant de $x=0$ (gauche) à $x=L$ (droite).
 
@@ -63,10 +63,10 @@ avec $L$ la distance horizontale parcourue, la piste s'étalant de $x=0$ (gauche
             
             \addplot3 [domain=-90:0,samples y=1,blue,smooth,line width = 1.5pt,name path=A] (0, x, {path2(-x-90)});
             
-            \path (axis cs:0,-90,100) node[above] {$z_A$} -- (axis cs:0,0,0) node[below] {$z_B$};
+            \path (axis cs:0,-90,100) node[above] {$y_A$} -- (axis cs:0,0,0) node[below] {$y_B$};
             
             \draw[thick,->] (axis cs:0,-90,45) -- (axis cs:0,-75,45) node[right,anchor=west] {$x$};
-            \draw[thick,->] (axis cs:-0,-90,45) -- (axis cs:0,-90,60) node[above,anchor=south] {$z$};
+            \draw[thick,->] (axis cs:-0,-90,45) -- (axis cs:0,-90,60) node[above,anchor=south] {$y$};
             
             \draw[thick,dashed,|<->|] (axis cs:55,-90,-15) -- (axis cs:55,0,-15) node[midway,sloped,above] {$L$};
 
@@ -102,7 +102,7 @@ Afin d'obtenir la bonne vitesse finale, il leur explique que le chemin parcouru 
 sont un cas simplifié d'une intégrale curviligne pour laquelle le chemin de parcours est une droite allant de $x=A$ à $x=B$.
 
 De manière générale, l'intégrale d'une fonction scalaire $f(x,y)$ le long d'un chemin $C$ peut se calculer
-\begin{equation}
+\begin{equation}\label{eq:int_scal}
     \int\limits_C f(x,y) d\ell,
 \end{equation}
 avec $d\ell$ l'incrément infinitésimal de longueur. 
@@ -111,34 +111,46 @@ Attention, $f(x)$ est bien la fonction à intégrer, \textbf{pas le chemin parco
 
 Pour le chemin rouge, 
 \begin{equation}
-    \vec{\ell}_R(x) = \begin{bmatrix}x & 0 & z_B + (z_A - z_B)\left(\frac{x-L}{L}\right)^2\end{bmatrix},
+    \vec{\ell}_R(x) = \begin{bmatrix}x & y_B + (y_A - y_B)\left(\frac{x-L}{L}\right)^2\end{bmatrix},
 \end{equation}
 et son élément de longueur infinitésimal\footnote{Ceci se calcule en prenant la dérivée du vecteur $\vec{\ell}$ par rapport à $x$.} vaut
 \begin{equation}
-    d\ell_R = \sqrt{1^2 + 0^2 + \Big(2(z_A - z_B)\frac{x-L}{L^2})\Big)^2} dx = \sqrt{1  + 4(z_A-z_B)^2 \frac{(x-L)^2}{L^4}} dx.
+    d\ell_R = \sqrt{1^2 + \Big(2(y_A - y_B)\frac{x-L}{L^2})\Big)^2} dx = \sqrt{1  + 4(y_A-y_B)^2 \frac{(x-L)^2}{L^4}} dx.
 \end{equation}
 
 D'une manière similaire, le chemin bleu suit maintenant la courbe
 \begin{equation}
-    \vec{\ell}_B(x) = \begin{bmatrix}x & 0 & z_A - (z_A - z_B)\frac{x}{L}\end{bmatrix},
+    \vec{\ell}_B(x) = \begin{bmatrix}x & y_A - (y_A - y_B)\frac{x}{L}\end{bmatrix},
 \end{equation}
 et
 \begin{equation}
-    d\ell_B = \sqrt{1^2 + 0^2 + (\frac{z_A - z_B}{L})^2} dx = \sqrt{1 + \frac{(z_A - z_B)^2}{L^2}} dx.
+    d\ell_B = \sqrt{1^2 + (\frac{y_A - y_B}{L})^2} dx = \sqrt{1 + \frac{(y_A - y_B)^2}{L^2}} dx.
 \end{equation}
+
+\textbf{Attention}, quand $\vec{f}$ est un champ vectoriel, son intégrale curviligne s'écrit:
+\begin{equation}\label{eq:int_vec}
+    \int\limits_C \vec{f}(x,y) \cdot d\vec{\ell},
+\end{equation}
+
+où $<\cdot>$ représente le produit scalaire, et $d\vec{\ell}$ est le vecteur tangent à $\ell$.
+
+Dans le cas d'une fonction $y = f(x)$, il s'obtient en calculant:
+\begin{equation}
+    d\vec{\ell} = \begin{bmatrix}\frac{dx}{dx} & \frac{dy}{dx}\end{bmatrix} \cdot dx = \begin{bmatrix} 1 & \frac{dy}{dx}\end{bmatrix} \cdot dx.
+\end{equation}
+
 
 \subsubsection{Champ conservatif}
 
 Avant de prendre en compte des forces non conservatives, vérifiez que l'énergie accumulée est la même pour les deux chemins si la seule force en jeu est la force de gravité
 \begin{equation}
-\vec{F} = \begin{bmatrix} 0 & 0 &-m\cdot g\end{bmatrix}.
+\vec{F} = \begin{bmatrix} 0 & -m\cdot g\end{bmatrix}.
 \end{equation}
 
 \questions
 \begin{enumerate}
-    \item Calculez, pour chacun des deux chemins, le travail effectué par la force de gravité sur le skieur $\vec{F}$.
-    \item Le champ gravitationnel étant conservatif, les résultats sont censés être les mêmes. Si ce n'est pas le cas, expliquez ce qu'il faut prendre en compte pour obtenir des réponses identiques.
-    \item Réécrivez, le cas échéant, l'intégrale de calcul du travail pour qu'elle soit correcte et vérifiez que vous obtenez le même résultat.
+    \item Calculez, pour chacun des deux chemins, le travail effectué par la force de gravité sur le skieur $\vec{F}$ en utilisant \eqref{eq:int_vec}. Le champ gravitationnel étant conservatif, les résultats sont censés être les mêmes.
+    \item Montrez, \textbf{intuitivement}, que, si vous aviez utilisé la forme scalaire \eqref{eq:int_scal} à la place de la forme vectorielle \eqref{eq:int_vec}, l'intégrale calculée n'est pas la même pour la courbe bleue et la courbe rouge.
 \end{enumerate}
 
 \vspace{\baselineskip}
@@ -149,9 +161,9 @@ Avant de prendre en compte des forces non conservatives, vérifiez que l'énergi
 
 Maintenant, Guillaume et François ont toutes les clés en main pour calculer le travail dans un champ non conservatif. Pour ce faire, ils supposent que, en plus de la force de gravité, une force de frottement du vent agit de manière proportionnelle à leur altitude :
 \begin{equation}
-     \vec{F} = \begin{bmatrix} \alpha \cdot z & 0 &-m\cdot g \end{bmatrix},
+     \vec{F} = \begin{bmatrix} \alpha \cdot z &-m\cdot g \end{bmatrix},
 \end{equation}
-avec $\alpha$ un coefficient positif de prise de vent propre à la corpulence du skieur et $z$ l'altitude du skieur (à remplacer en fonction de la courbe rouge ou bleue).
+avec $\alpha$ un coefficient positif de prise de vent propre à la corpulence du skieur et $y$ l'altitude du skieur (à remplacer en fonction de la courbe rouge ou bleue).
 
 
 \vspace{\baselineskip}
@@ -162,7 +174,7 @@ avec $\alpha$ un coefficient positif de prise de vent propre à la corpulence du
 \questions
 \begin{enumerate}
     \item Calculez, pour chacun des deux chemins, le travail effectué par la force totale $\vec{F}$ sur le skieur. Notez $\alpha_R$ pour le chemin rouge, $\alpha_B$ pour le bleu.
-    \item Écrivez le rapport $\alpha_R/\alpha_B$, pour des skieurs de même masse, si on prend en compte les vitesses énoncées plus haut. 
+    \item En supposant que nos deux skieurs ont tous les deux une masse de \SI{70}{\kilo\gram}, calculez leur coefficient $\alpha$ respectif de manière à atteindre les vitesses mentionnées plus haut. Utilisez $y_A = \SI{20}{\meter}$, $y_B = \SI{0}{\meter}$, et $L = \SI{100}{\meter}$.
 \end{enumerate}
 
 
