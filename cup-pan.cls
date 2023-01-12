@@ -5,6 +5,7 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
+\RequirePackage{amsmath}
 \RequirePackage{etoolbox,xpatch}
 \RequirePackage{ifxetex,ifluatex}
 \RequirePackage{setspace}
@@ -22,7 +23,6 @@
 \RequirePackage{textcomp}
 \RequirePackage[absolute]{textpos}
 \RequirePackage[right]{lineno}
-\RequirePackage{amsmath}
 \RequirePackage{lastpage}
 
 \def\@journalname{Political Analysis}
