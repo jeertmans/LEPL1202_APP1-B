@@ -5,6 +5,7 @@
 \ProcessOptions\relax
 \LoadClass{article}
 
+\RequirePackage{amsmath}
 \RequirePackage{etoolbox,xpatch}
 \RequirePackage{ifxetex,ifluatex}
 \RequirePackage{setspace}
@@ -21,8 +22,7 @@
 \RequirePackage{authblk}
 \RequirePackage{textcomp}
 \RequirePackage[absolute]{textpos}
-\RequirePackage[right]{lineno}
-\RequirePackage{amsmath}
+\RequirePackage[right]{lineno} % https://github.com/latex-lineno/lineno/issues/5
 \RequirePackage{lastpage}
 
 \def\@journalname{Political Analysis}
