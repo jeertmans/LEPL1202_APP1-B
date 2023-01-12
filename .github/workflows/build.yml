@@ -1,8 +1,5 @@
 name: Build LaTeX document
 on:
-  schedule:
-    # cron every 30 days, because of file retention imposed by upload-artifact
-    - cron: '0 0 */30 * *'
   push:
     branches:
       - main
@@ -13,12 +10,20 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v3
+        with:
+          branch: build
+          fetch-depth: 0
+      - name: Reset build to origin/main
+        run: git reset --hard origin/main
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v2
         with:
           root_file: main.tex
           latexmk_use_lualatex: true
-      - uses: actions/upload-artifact@v3
+      - name: Remove everything except build
+        run: find . ! -name 'main.pdf' -type f -exec rm -f {} +
+      - name: Push latest build to build branch
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          name: PDF
-          path: main.pdf
+          commit_message: "Build latex document"
+          push_options: "--force"

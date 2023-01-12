@@ -22,7 +22,7 @@
 \RequirePackage{authblk}
 \RequirePackage{textcomp}
 \RequirePackage[absolute]{textpos}
-\RequirePackage[right]{lineno}
+\RequirePackage[right]{lineno} % https://github.com/latex-lineno/lineno/issues/5
 \RequirePackage{lastpage}
 
 \def\@journalname{Political Analysis}
