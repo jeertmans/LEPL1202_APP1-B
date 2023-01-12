@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.tex'
+      - '**.cls'
   workflow_dispatch:
 jobs:
   build_latex:
