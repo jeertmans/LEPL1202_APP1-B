@@ -21,7 +21,9 @@ jobs:
           root_file: main.tex
           latexmk_use_lualatex: true
       - name: Remove everything except build
-        run: find . ! -name 'main.pdf' -type f -exec rm -f {} +
+        run: |
+          find . ! -name 'main.pdf' ! -path '*/.*' -type f -exec rm -f {} +
+          mv main.pdf LEPL1202-APP1-B.pdf
       - name: Push latest build to build branch
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
