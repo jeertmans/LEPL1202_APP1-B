@@ -11,7 +11,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v3
         with:
-          branch: build
+          ref: build
           fetch-depth: 0
       - name: Reset build to origin/main
         run: git reset --hard origin/main
