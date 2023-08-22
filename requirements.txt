@@ -2,6 +2,9 @@ hide_code
 ipywidgets==7.6.5
 jupyter_contrib_nbextensions
 jupyter-server==1.17.0
+jupyterlab-language-pack-fr-FR
+jupyterlab-tour
+jupyterlab-night
 nbconvert==6.5.1 
 notebook==6.5.2
 numpy
