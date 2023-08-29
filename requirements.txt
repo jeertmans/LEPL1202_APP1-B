@@ -1,7 +1,7 @@
 hide_code
 ipywidgets==7.6.5
 jupyter_contrib_nbextensions
-jupyter-server==1.17.0
+jupyter-server==2.7.2
 jupyterlab-language-pack-fr-FR
 jupyterlab-tour
 jupyterlab-night
