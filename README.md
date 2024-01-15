@@ -23,3 +23,7 @@ which makes the overall Notebook look a bit cleaner.
 ## Questions or issues
 
 Please contact me at [jerome.eertmans@uclouvain.be](mailto:jerome.eertmans@uclouvain.be) or via the [GitHub issues](https://github.com/jeertmans/LEPL1202_APP1-B/issues).
+
+# APP1 - Part A
+
+[Click here](https://github.com/jeertmans/LEPL1202_APP1-A).
