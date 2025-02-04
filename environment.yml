@@ -6,4 +6,4 @@ dependencies:
   - ipywidgets
   - nbformat<=5.5.0  # https://github.com/jupyterlite/xeus-python-kernel/issues/120
   - numpy
-  - conda-forge::plotly>=5.12.0
+  - conda-forge::plotly>=5.12.0,<5.13
