@@ -28,7 +28,7 @@ jobs:
           find . ! -name 'main.pdf' ! -path '*/.*' -type f -exec rm -f {} +
           mv main.pdf LEPL1202-APP1-B.pdf
       - name: Push latest build to build branch
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Build latex document"
           push_options: "--force"
